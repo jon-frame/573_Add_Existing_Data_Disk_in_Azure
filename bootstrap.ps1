@@ -11,9 +11,7 @@ if (1 -eq 1) {
 
     $LastExitCode = 0
 
-}
-
-else {  
+}else {  
 # something didn't work right, so the deployment should fail
 
     $LastExitCode = 1
