@@ -6,7 +6,7 @@ $data_disk_file_name = "acg_logo.jpg"
 
 
 # Get VM Metadata so we can find and detach the disk
-$metadata = Invoke-RestMethod -Headers @{"Metadata"="true"} -Method GET -Uri http://169.254.169.254/metadata/instance?api-version=2020-06-01
+$metadata = Invoke-RestMethod -Headers @{"Metadata"="true"} -Method GET -UseBasicParsing -Uri http://169.254.169.254/metadata/instance?api-version=2020-06-01
 $subscription = $metadata.compute.subscriptionId 
 $resourcegroup = $metadata.compute.resourceGroupName 
 $vmname = $metadata.compute.name 
