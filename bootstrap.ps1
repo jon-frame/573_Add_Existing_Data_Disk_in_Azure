@@ -1,4 +1,4 @@
-## Bootstrap to initialise a secondary disk for HoL, and populate with some content 
+ ## Bootstrap to initialise a secondary disk for HoL, and populate with some content 
 ## Variables for this HoL
 $data_disk_size = "10"
 $data_disk_file_url = "https://github.com/jon-frame/573_Add_Existing_Data_Disk_in_Azure/raw/master/acg_logo.jpg"
@@ -40,3 +40,4 @@ Remove-AzVMDataDisk -VM $VirtualMachine -Name $disk.Name
 Update-AzVM -VM $VirtualMachine -ResourceGroupName $resourcegroup
 
 EXIT 0
+ 
