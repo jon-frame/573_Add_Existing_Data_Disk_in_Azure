@@ -23,7 +23,13 @@ Add-AzAccount -identity
 $disk = Get-AzDisk |?{$_.DiskSizeGB -eq $data_disk_size}
 $vm = Get-AzVM -Name $vmname -resourceGroupName $resourcegroup
 Add-AzVMDataDisk -CreateOption Attach -Lun 0 -VM $vm -ManagedDiskId $disk.Id
-Update-AzVM -VM $vm -ResourceGroupName $resourcegroup
+$VMUpdate = Update-AzVM -VM $vm -ResourceGroupName $resourcegroup -AsJob
+while (($VMUpdate.State -eq "Running") -and ($VMUpdate.State -ne "NotStarted"))
+{
+	Write-Host 'waiting for VM to update.' -NoNewline
+	Start-Sleep -Seconds 5
+}
+
 
 # Mount the secondary disk (It will be a RAW disk)
 $NewPartition = Get-Disk |?{$_.PartitionStyle -eq "RAW"} |  Initialize-Disk -PassThru | New-Partition -AssignDriveLetter -UseMaximumSize | Format-Volume
@@ -37,7 +43,12 @@ $ExtraDisk = Get-Disk |?{$_.PartitionStyle -eq "GPT"} | Set-Disk -IsOffline $tru
 # Detach from the VM
 $VirtualMachine = Get-AzVM -ResourceGroupName $resourcegroup -Name $vm.Name
 Remove-AzVMDataDisk -VM $VirtualMachine -Name $disk.Name
-Update-AzVM -VM $VirtualMachine -ResourceGroupName $resourcegroup
+$VMUpdate = Update-AzVM -VM $vm -ResourceGroupName $resourcegroup -AsJob
+while (($VMUpdate.State -eq "Running") -and ($VMUpdate.State -ne "NotStarted"))
+{
+	Write-Host 'waiting for VM to update.' -NoNewline
+	Start-Sleep -Seconds 5
+}
 
 EXIT 0
  
