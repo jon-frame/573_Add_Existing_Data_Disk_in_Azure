@@ -23,8 +23,9 @@ Add-AzAccount -identity
 $disk = Get-AzDisk |?{$_.DiskSizeGB -eq $data_disk_size}
 $vm = Get-AzVM -Name $vmname -resourceGroupName $resourcegroup
 Add-AzVMDataDisk -CreateOption Attach -Lun 0 -VM $vm -ManagedDiskId $disk.Id
-$VMUpdate = Update-AzVM -VM $vm -ResourceGroupName $resourcegroup -AsJob
-while (($VMUpdate.State -eq "Running") -and ($VMUpdate.State -ne "NotStarted"))
+$vm = Get-AzVM -Name $vmname -resourceGroupName $resourcegroup
+Update-AzVM -VM $vm -ResourceGroupName $resourcegroup
+while ((get-azvm).ProvisioningState -eq "Updating")
 {
 	Write-Host 'waiting for VM to update.' -NoNewline
 	Start-Sleep -Seconds 5
@@ -43,8 +44,8 @@ $ExtraDisk = Get-Disk |?{$_.PartitionStyle -eq "GPT"} | Set-Disk -IsOffline $tru
 # Detach from the VM
 $VirtualMachine = Get-AzVM -ResourceGroupName $resourcegroup -Name $vm.Name
 Remove-AzVMDataDisk -VM $VirtualMachine -Name $disk.Name
-$VMUpdate = Update-AzVM -VM $vm -ResourceGroupName $resourcegroup -AsJob
-while (($VMUpdate.State -eq "Running") -and ($VMUpdate.State -ne "NotStarted"))
+Update-AzVM -VM $vm -ResourceGroupName $resourcegroup
+while ((get-azvm).ProvisioningState -eq "Updating")
 {
 	Write-Host 'waiting for VM to update.' -NoNewline
 	Start-Sleep -Seconds 5
