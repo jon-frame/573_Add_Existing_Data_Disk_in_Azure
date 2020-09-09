@@ -29,7 +29,7 @@ Update-AzVM -VM $vm -ResourceGroupName $resourcegroup
 $NewPartition = Get-Disk |?{$_.PartitionStyle -eq "RAW"} |  Initialize-Disk -PassThru | New-Partition -AssignDriveLetter -UseMaximumSize | Format-Volume
 
 # Write content to disk for later retrieval
-Invoke-WebRequest $data_disk_file_url -OutFile ($NewPartition.DriveLetter+"://$data_disk_file_name")
+Invoke-WebRequest $data_disk_file_url -UseBasicParsing -OutFile ($NewPartition.DriveLetter+"://$data_disk_file_name")
 
 # Dismount the disk from OS
 $ExtraDisk = Get-Disk |?{$_.PartitionStyle -eq "GPT"} | Set-Disk -IsOffline $true
