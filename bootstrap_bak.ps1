@@ -44,7 +44,7 @@ $ExtraDisk = Get-Disk |?{$_.PartitionStyle -eq "GPT"} | Set-Disk -IsOffline $tru
 # Detach from the VM
 $VirtualMachine = Get-AzVM -ResourceGroupName $resourcegroup -Name $vm.Name
 Remove-AzVMDataDisk -VM $VirtualMachine -Name $disk.Name
-Update-AzVM -VM $vm -ResourceGroupName $resourcegroup
+Update-AzVM -VM $VirtualMachine -ResourceGroupName $resourcegroup
 while ((get-azvm).ProvisioningState -eq "Updating")
 {
 	Write-Host 'waiting for VM to update.' -NoNewline
